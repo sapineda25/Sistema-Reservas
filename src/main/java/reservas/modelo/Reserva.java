@@ -22,9 +22,8 @@ import javax.persistence.TemporalType;
 	@NamedQuery( name="reserva.buscarReservasPorUsuario", query="select r from Reserva r join r.usuario user where user.login =:login" ),
 	@NamedQuery( name="reserva.buscarReservasPorFecha", query="select r from Reserva r where r.fecha =:fecha" ),
 	@NamedQuery( name="reserva.buscarReservasPorEstado", query="select r from Reserva r where r.estado =:estado" ),
-	//@NamedQuery( name="reserva.numeroReservasDeUsuario", query="select count(p) from Reserva r where r.usuario.login = :login and p.estado = 'completed' ")
-	@NamedQuery( name="reserva.buscarUsuarioConReservas", query="select r from Reserva r where r.usuario.login = :login and r.estado = 'completed'" ),
-	//@NamedQuery( name="reserva.buscarReservasPorUsuario", query="select r from Reserva r join r.mesa and r.usuario where user.login =:login" ),
+	//@NamedQuery( name="reserva.numeroReservasDeUsuario", query="select count(p) from Reserva r join r.mesa m where m.restaurante.nit = :nit and r.usuario.login = :login and p.estado = reservas.modelo.EstadoReserva.completed")
+	
 })
 public class Reserva {
 	

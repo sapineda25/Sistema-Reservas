@@ -15,12 +15,13 @@ import javax.persistence.OneToMany;
 @Entity
 @NamedQueries({
 	@NamedQuery( name="restaurante.buscarPorNit", query="select r from Restaurante r where r.nit = :nit" ),
-	@NamedQuery( name="restaurante.buscarPorNombre", query="select r from Restaurante r where r.nombre = :nombre" )
+	@NamedQuery( name="restaurante.buscarPorNombre", query="select r from Restaurante r where r.nombre like '%:nombre%'" ),
+	@NamedQuery(name="restaurante.buscarPorEspecialidad", query="select r from Restaurante r where r.especialidad = :especialidad") 
 	
 })
 public class Restaurante {
 	@Id
-	Double nit;
+	int nit;
 	String nombre;
 	String direccion;
 	String telefono;
@@ -33,18 +34,18 @@ public class Restaurante {
 	List<Comentario> comentarios = new ArrayList<Comentario>();
 
 	@OneToMany(cascade={ CascadeType.ALL, CascadeType.REMOVE}, fetch=FetchType.LAZY, mappedBy="restaurante" )
-	List<Mesa> mesas = new ArrayList<Mesa>();
+	List<TipoMesa> mesas = new ArrayList<TipoMesa>();
 	
 	
 	public Restaurante(){}
 
 
-	public Double getNit() {
+	public int getNit() {
 		return nit;
 	}
 
 
-	public void setNit(Double nit) {
+	public void setNit(int nit) {
 		this.nit = nit;
 	}
 
@@ -119,16 +120,14 @@ public class Restaurante {
 	}
 
 
-	public List<Mesa> getMesas() {
+	public List<TipoMesa> getMesas() {
 		return mesas;
 	}
 
 
-	public void setMesas(List<Mesa> mesas) {
+	public void setMesas(List<TipoMesa> mesas) {
 		this.mesas = mesas;
 	}
-	
-	
 	
 
 }

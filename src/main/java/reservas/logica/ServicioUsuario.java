@@ -87,12 +87,8 @@ public class ServicioUsuario {
 	
 		UsuarioExistente.setActivo(false);
         daoUsuario.update(UsuarioExistente);
-		
-		
-		
+				
 	} 
-	
-	
 	
 
 }

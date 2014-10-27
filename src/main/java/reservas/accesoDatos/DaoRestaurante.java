@@ -16,7 +16,7 @@ public class DaoRestaurante extends GenericJpaDAO<Restaurante, String>{
 		
 	}
 	
-	public Restaurante buscarPorNit(Double nit){
+	public Restaurante buscarPorNit(int nit){
 		return executeSingleResultNamedQuery(
 				"restaurante.buscarPorNit",
 				Map( entry("nit", nit))
@@ -28,6 +28,13 @@ public class DaoRestaurante extends GenericJpaDAO<Restaurante, String>{
 		return executeListResultNamedQuery(
 				"restaurante.buscarPorNombre",
 				Map( 	entry("nombre", nombre )
+						));
+	}
+	
+	public List<Restaurante> buscarPorEspecialidad (String especialidad){
+		return executeListResultNamedQuery(
+				"restaurante.buscarPorEspecialidad",
+				Map( 	entry("especialidad", especialidad )
 						));
 	}
 	

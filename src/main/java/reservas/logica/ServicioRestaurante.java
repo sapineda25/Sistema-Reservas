@@ -24,7 +24,7 @@ public class ServicioRestaurante {
 	//casos de uso
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void crearRestaurante(Double nit, String nombre, String direccion, String telefono,	String especialidad, String geocode,Boolean activo)throws Exception{
+	public void crearRestaurante(int nit, String nombre, String direccion, String telefono,	String especialidad, String geocode,Boolean activo)throws Exception{
 		
 		//3. Valida que no exista un Restaurante con ese NIT.
 		Restaurante nitExistente = daoRestaurante.buscarPorNit(nit);
@@ -83,7 +83,7 @@ public class ServicioRestaurante {
 	}
 	
 	
-	public void inactivarRestaurante(String login, Double nit) throws Exception{
+	public void inactivarRestaurante(String login, int nit) throws Exception{
 		// 2.	Valida que el usuario sea administrador de restaurante
 		Usuario usuarioAdministrador = daoUsuario.ValidarUsuarioAdministrador(login);
 		
@@ -101,9 +101,11 @@ public class ServicioRestaurante {
 	
         restauranteExistente.setActivo(false);
         daoRestaurante.update(restauranteExistente);
-		
-		
-		
+			
+	} 
+	// Obtiene la  lista de todos los restaurantes registrados en la aplicación que tienen la especialidad seleccionada.
+	public List<Restaurante> buscarPorEspecialidad(String especialidad){
+		return daoRestaurante.buscarPorEspecialidad(especialidad);
 	} 
 	
 	

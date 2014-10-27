@@ -61,11 +61,15 @@ public class DatosPrueba {
 		initDB();
 
 		beginTx();
-		manager.createQuery( "DELETE FROM Atencion" ).executeUpdate();
+		manager.createQuery( "DELETE FROM Reserva" ).executeUpdate();
 		commitTx();
 		
 		beginTx();		
-		manager.createQuery( "DELETE FROM Solicitud" ).executeUpdate();
+		manager.createQuery( "DELETE FROM Mesa" ).executeUpdate();
+		commitTx();
+		
+		beginTx();		
+		manager.createQuery( "DELETE FROM Comentario" ).executeUpdate();
 		commitTx();
 		
 		beginTx();
@@ -73,93 +77,172 @@ public class DatosPrueba {
 		commitTx();
 		
 		beginTx();
-		manager.createQuery( "DELETE FROM Estado" ).executeUpdate();
+		manager.createQuery( "DELETE FROM Restaurante" ).executeUpdate();
 		commitTx();
 		
 	}
 
-	public void crearUsuario( String login, String password, String nombre, boolean administrador, boolean funcionario) throws Exception {
+	public void crearUsuario( String login, String nombre, String apellido, String telefono, String password, TipoUsuario tipo, Boolean activo) throws Exception {
 		
 		initDB();		
 		beginTx();
 				
-		Usuarioold usuario = new Usuarioold();
+		Usuario usuario = new Usuario();
 		usuario.setLogin(login);
-		usuario.setPassword(password);
 		usuario.setNombre(nombre);
-		usuario.setAdministrador(administrador);
-		usuario.setFuncionario(funcionario);
+		usuario.setApellido(apellido);
+		usuario.setTelefono(telefono);
+		usuario.setPassword(password);
+		usuario.setTipo(tipo);
+		usuario.setActivo(activo);
 		
 		manager.persist(usuario);
 		
 		commitTx();
 		
 	}
-	
-	public void crearEstado( Long id, String nombre, String descripcion ) throws Exception {
-
-		initDB();
+	 public void crearTipoMesa(Long id, int capacidad, int nit, String descripcion)throws Exception{
+		 
+		initDB();		
 		beginTx();
-					
-		Estado estado = new Estado();
-		estado.setId(id);
-		estado.setNombre(nombre);
-		estado.setDescripcion(descripcion);
 		
-		manager.persist(estado);
+		Restaurante restaurante = manager.find(Restaurante.class, id);
+		
+		TipoMesa tipo = new TipoMesa();
+		tipo.setId(id);
+		tipo.setCapacidad(capacidad);
+		tipo.setDescripcion(descripcion);
+		tipo.setRestaurante(restaurante);
+		restaurante.getMesas().add(tipo);
+		
+		manager.persist(tipo);
+		manager.persist(restaurante);
 		
 		commitTx();
 		
-	}
+		
+	 }
+	 
+	 public void crearMesa(Long id, Boolean disponible)throws Exception{
+		initDB();		
+		beginTx();
+		
+		TipoMesa tipo = manager.find(TipoMesa.class, id);
+		Mesa mesa = new Mesa();
+		mesa.setDisponible(disponible);
+		mesa.setTipo(tipo);
+		tipo.getMesas().add(mesa);
+		
+		
+		
+	 }
 	
-	public void crearSolicitud( String login, Long id, String descripcion, Long idEstado, Date fecha ) throws Exception {
+	
+	
+	
+	public void crearRestaurante(int nit, String nombre, String direccion, String telefono, String especialidad, String geocode, Boolean activo)throws Exception{
 		
 		initDB();		
 		beginTx();
-					
-		Usuarioold usuario = manager.find( Usuarioold.class, login );
-		Estado estado = manager.find( Estado.class, idEstado );
-
-		Solicitud solicitud = new Solicitud();
-		solicitud.setId(id);
-		solicitud.setAsunto(descripcion);
-		solicitud.setDescripcion(descripcion);
-		solicitud.setFecha(fecha);
 		
-		solicitud.setSolicitante(usuario);
-		usuario.getSolicitudes().add(solicitud);
+		Restaurante restaurante = new Restaurante();
+		restaurante.setNit(nit);
+		restaurante.setNombre(nombre);
+		restaurante.setDireccion(direccion);
+		restaurante.setTelefono(telefono);
+		restaurante.setEspecialidad(especialidad);
+		restaurante.setGeocode(geocode);
+		restaurante.setActivo(activo);
 		
-		solicitud.setEstado(estado);
-		estado.getSolicitudes().add(solicitud);
-		
-		manager.persist( usuario );
-		manager.persist( solicitud );
-		manager.persist( estado );
+		manager.persist(restaurante);
 		
 		commitTx();
+		
+		
 	}
 	
-	public void crearAtencion( Long id,  String login, String descripcion, Date fecha ) throws Exception {
-
+	public void  CrearComentario(String login, int nit, Date fecha, String texto, Calificacion calificacion, Boolean activo)throws Exception {
+		
 		initDB();		
 		beginTx();
-			
-		Usuarioold usuario = manager.find( Usuarioold.class, login );
-		Solicitud solicitud = manager.find( Solicitud.class, id );
-
-		Atencion atencion = new Atencion();
-		atencion.setSolicitud(solicitud);
-		solicitud.getAtenciones().add(atencion);
 		
-		atencion.setFuncionario(usuario);
-		usuario.getAtenciones().add(atencion);
-
-		manager.persist( usuario );
-		manager.persist( solicitud );
-		manager.persist( atencion );
+		Usuario autor = manager.find( Usuario.class, login );
+		Restaurante restaurante = manager.find(Restaurante.class, nit);
+		
+		Comentario coment = new Comentario();
+		coment.setAutor(autor);
+		autor.getComentarios().add(coment);
+		
+		
+		coment.setRestaurante(restaurante);
+		restaurante.getComentarios().add(coment);
+		//fecha = new Date();
+		coment.setFecha(fecha);
+		coment.setTexto(texto);
+		coment.setCalificacion(calificacion);
+		coment.setActivo(activo);
+		
+		manager.persist(coment);
+		manager.persist(autor);
+		manager.persist(restaurante);
 		
 		commitTx();
+		
+		
 	}
+	
+	
+	
+	
+		
+//	public void crearSolicitud( String login, Long id, String descripcion, Long idEstado, Date fecha ) throws Exception {
+//		
+//		initDB();		
+//		beginTx();
+//					
+//		Usuarioold usuario = manager.find( Usuarioold.class, login );
+//		Estado estado = manager.find( Estado.class, idEstado );
+//
+//		Solicitud solicitud = new Solicitud();
+//		solicitud.setId(id);
+//		solicitud.setAsunto(descripcion);
+//		solicitud.setDescripcion(descripcion);
+//		solicitud.setFecha(fecha);
+//		
+//		solicitud.setSolicitante(usuario);
+//		usuario.getSolicitudes().add(solicitud);
+//		
+//		solicitud.setEstado(estado);
+//		estado.getSolicitudes().add(solicitud);
+//		
+//		manager.persist( usuario );
+//		manager.persist( solicitud );
+//		manager.persist( estado );
+//		
+//		commitTx();
+//	}
+	
+//	public void crearAtencion( Long id,  String login, String descripcion, Date fecha ) throws Exception {
+//
+//		initDB();		
+//		beginTx();
+//			
+//		Usuarioold usuario = manager.find( Usuarioold.class, login );
+//		Solicitud solicitud = manager.find( Solicitud.class, id );
+//
+//		Atencion atencion = new Atencion();
+//		atencion.setSolicitud(solicitud);
+//		solicitud.getAtenciones().add(atencion);
+//		
+//		atencion.setFuncionario(usuario);
+//		usuario.getAtenciones().add(atencion);
+//
+//		manager.persist( usuario );
+//		manager.persist( solicitud );
+//		manager.persist( atencion );
+//		
+//		commitTx();
+//	}
 
 	
 	// --
@@ -169,37 +252,26 @@ public class DatosPrueba {
 
 		initDB();
 		
-		crearUsuario( "uno", "uno", "uno", false, false);
-		crearUsuario( "dos", "dos", "dos", false, false);
-		crearUsuario( "tres", "tres", "tres", false, false);
 		
-		crearUsuario( "atencion1", "uno", "atencion uno", false, true);
-		crearUsuario( "atencion2", "dos", "atencion dos", false, true);
+		crearUsuario("silvanopineda@gmail.com", "Silvano", "Pineda", "4302688", "Root", reservas.modelo.TipoUsuario.Admin, true);
+		crearRestaurante(1014205572, "La Fragata", "Calle 93B- NO 11-26", "4330000", "Carnes", "-34.397, 150.644", true);
+		crearTipoMesa(01L,01, 1014205572, "Mesa para uno");
+		crearTipoMesa(02L,02, 1014205572, "Mesa para dos");
+		crearTipoMesa(03L,03, 1014205572, "Mesa para Cuatro");
+		crearTipoMesa(04L,04, 1014205572, "Mesa para Seis");
+		crearMesa(01L, true);
+		crearMesa(01L, true);
+		crearMesa(01L, true);
+		crearMesa(02L, true);
+		crearMesa(02L, true);
+		crearMesa(02L, true);
+		crearMesa(03L, true);
+		crearMesa(03L, true);
+		crearMesa(03L, true);
 		
-		crearUsuario( "admin", "admin", "administrador", true, true);
 
-		crearEstado( 1L, 	"abierto", 	"abierto" );
-		crearEstado( 2L, 	"espera", 	"espera" );
-		crearEstado( 3L, 	"atendido", "atendido" );
-		crearEstado( 4L, 	"cerrado", 	"cerrado" );
+		CrearComentario("silvanopineda@gmail.com", 1014205572, new Date(), "El servicio es Excelente", reservas.modelo.Calificacion.CUATRO, true);
 		
-		crearSolicitud("uno", 101L, "ayuda con la impresora", 4L, new Date());
-		crearAtencion( 101L, "atencion1", "hay que prender la impresora", new Date());
-		crearAtencion( 101L, "uno", "gracias", new Date());
-
-		crearSolicitud("uno", 102L, "ayuda con el monitor", 4L, new Date());
-		crearAtencion( 102L, "atencion2", "hay que prender el monitor", new Date());
-		crearAtencion( 102L, "uno", "gracias", new Date());
-
-		crearSolicitud("dos", 103L, "no funciona la base de datos", 2L, new Date());
-		crearAtencion( 103L, "atencion1", "cual base de datos", new Date());
-
-		crearSolicitud("tres", 104L, "no funciona la base de datos", 1L, new Date());
-
-		crearSolicitud("dos", 105L, "necesito instalar office", 2L, new Date());
-		crearAtencion( 105L, "atencion1", "tiene una licencia ?", new Date());
-		crearAtencion( 105L, "dos", "no tengo", new Date());
-		crearAtencion( 105L, "atencion1", "no puedo instalarlo", new Date());
 		
 		
 	}	

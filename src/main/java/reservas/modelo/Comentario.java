@@ -23,6 +23,7 @@ public class Comentario {
 	@Temporal( TemporalType.DATE )
 	Date fecha;
 	String texto;
+	Boolean Activo;
 	@Enumerated(EnumType.STRING)
 	private Calificacion calificacion;
 	
@@ -38,7 +39,18 @@ public class Comentario {
 	
 	public Comentario(){}
 	
-	
+
+	public Boolean getActivo() {
+		return Activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		Activo = activo;
+	}
+
+
+
+
 
 	public Calificacion getCalificacion() {
 		return calificacion;

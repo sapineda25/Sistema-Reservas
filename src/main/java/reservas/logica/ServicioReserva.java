@@ -111,6 +111,13 @@ public class ServicioReserva {
 		return daoReserva.buscarReservasPorEstado(estado);
 	}
 	
+	public void cancelarReserva(String login)throws Exception{
+		
+		
+		
+		
+	}
+	
 	
 	
 	

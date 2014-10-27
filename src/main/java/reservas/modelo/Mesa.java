@@ -1,6 +1,7 @@
 package reservas.modelo;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,25 +13,45 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+
 @Entity
 public class Mesa {
 	
 	@Id
 	@GeneratedValue
 	Long id;
-	int Capacidad;
-	Boolean Reservada;
+	Boolean disponible;
+	
 	
 		
 	@OneToMany(cascade={ CascadeType.ALL, CascadeType.REMOVE}, fetch=FetchType.LAZY, mappedBy="mesa" )
 	List<Reserva> reservas = new ArrayList<Reserva>();
 	
 	@ManyToOne(cascade={CascadeType.ALL, CascadeType.REMOVE},fetch=FetchType.LAZY )
-	@JoinColumn( name="restaurante_id" )
-	Restaurante restaurante;
+	@JoinColumn( name="tipo_id" )
+	TipoMesa tipo;	
+	
 	
 		
 	public Mesa(){}
+	
+	
+	public Boolean getDisponible() {
+		return disponible;
+	}
+
+	public void setDisponible(Boolean disponible) {
+		this.disponible = disponible;
+	}
+	
+
+	public TipoMesa getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoMesa tipo) {
+		this.tipo = tipo;
+	}
 
 
 	public Long getId() {
@@ -42,27 +63,6 @@ public class Mesa {
 		this.id = id;
 	}
 
-
-	public int getCapacidad() {
-		return Capacidad;
-	}
-
-
-	public void setCapacidad(int capacidad) {
-		Capacidad = capacidad;
-	}
-
-
-	public Boolean getReservada() {
-		return Reservada;
-	}
-
-
-	public void setReservada(Boolean reservada) {
-		Reservada = reservada;
-	}
-
-
 	public List<Reserva> getReservas() {
 		return reservas;
 	}
@@ -70,18 +70,6 @@ public class Mesa {
 
 	public void setReservas(List<Reserva> reservas) {
 		this.reservas = reservas;
-	}
-
-
-	public Restaurante getRestaurante() {
-		return restaurante;
-	}
-
-
-	public void setRestaurante(Restaurante restaurante) {
-		this.restaurante = restaurante;
-	}
+	}	
 	
-		
-
 }

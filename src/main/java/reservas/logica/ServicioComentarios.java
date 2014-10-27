@@ -1,7 +1,6 @@
 package reservas.logica;
 
 import java.util.Date;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -29,7 +28,7 @@ public class ServicioComentarios {
 	// Crear Comentario
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void crearComentario(Double nit, Usuario autor, Date fecha, String texto, Calificacion calificacion )throws Exception{
+	public void crearComentario(int nit, Usuario autor, Date fecha, String texto, Calificacion calificacion)throws Exception{
 		
 		Restaurante RestauranteExistente = daoRestaurante.buscarPorNit(nit);
 		if (RestauranteExistente == null){
@@ -46,7 +45,7 @@ public class ServicioComentarios {
 		coment.setFecha(fecha);
 		coment.setTexto(texto);
 		coment.setCalificacion(calificacion);
-		
+				
 		daoComentario.create(coment);
 		
 		RestauranteExistente.getComentarios().add(coment);
@@ -55,5 +54,23 @@ public class ServicioComentarios {
 		
 		
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void borrarComentario(String login, Long id)throws Exception {
+		// 2.	Valida que el usuario sea administrador de restaurante
+				Usuario usuarioAdministrador = daoUsuario.ValidarUsuarioAdministrador(login);
+				
+				if ( usuarioAdministrador == null ) {
+					throw new Exception( "El usuario no es administrador general");
+				}
+				
+				Comentario ComentarioSeleccionado = daoComentario.findById(id);
+				
+				daoComentario.delete(ComentarioSeleccionado);
+						
+				
+	}
+	
+	
 
 }

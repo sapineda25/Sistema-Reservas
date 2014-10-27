@@ -33,7 +33,4 @@ public class DaoUsuario extends GenericJpaDAO<Usuario, String>{
 	}
 	
 	
-		
-	
-	
 }
